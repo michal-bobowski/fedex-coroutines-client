@@ -26,6 +26,8 @@ dependencies {
 	implementation("org.apache.logging.log4j:log4j-api")
 	implementation("org.apache.logging.log4j:log4j-core")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+	implementation("io.github.resilience4j:resilience4j-all:1.4.0")
+	implementation("io.github.resilience4j:resilience4j-kotlin:1.4.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

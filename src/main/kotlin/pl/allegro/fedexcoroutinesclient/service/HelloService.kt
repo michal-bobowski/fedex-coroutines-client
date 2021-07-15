@@ -1,4 +1,4 @@
-package pl.allegro.fedexcoroutinesclient
+package pl.allegro.fedexcoroutinesclient.service
 
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import pl.allegro.fedexcoroutinesclient.api.HelloFeignClient
+import pl.allegro.fedexcoroutinesclient.logger
 import java.util.concurrent.Executors
 
 @Component

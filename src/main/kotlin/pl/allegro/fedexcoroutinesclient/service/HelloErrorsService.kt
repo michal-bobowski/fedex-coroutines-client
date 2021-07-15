@@ -1,4 +1,4 @@
-package pl.allegro.fedexcoroutinesclient
+package pl.allegro.fedexcoroutinesclient.service
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import pl.allegro.fedexcoroutinesclient.api.HelloFeignClient
+import pl.allegro.fedexcoroutinesclient.logger
 import java.util.concurrent.Executors
 
 @Component
@@ -17,9 +18,10 @@ class HelloErrorsService(
 ) {
 
     fun callHelloErrorsNo1(): List<String> {
+        val dispatcher = Executors.newFixedThreadPool(10).asCoroutineDispatcher()
         return runBlocking {
-            val deferred1 = async { callHelloWithErrors() }
-            val deferred2 = async { callHello5Seconds() }
+            val deferred1 = async(dispatcher) { callHelloWithErrors() }
+            val deferred2 = async(dispatcher) { callHello5Seconds() }
             listOf(deferred1, deferred2).awaitAll()
         }
     }
