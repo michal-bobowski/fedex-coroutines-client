@@ -8,6 +8,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import pl.allegro.fedexcoroutinesclient.api.HelloFeignClient
 import java.util.concurrent.Executors
 
 @Component
