@@ -21,9 +21,9 @@ class HelloService(
     fun callHelloSuspendedNo1(): List<String> {
         logThreadInfo("Top level")
         return runBlocking {
-            val deferred1 = async { callHello5Seconds() }.await()
-            val deferred2 = async { callHello10Seconds() }.await()
-            listOf(deferred1, deferred2)
+            val string1 = async { callHello5Seconds() }.await()
+            val string2 = async { callHello10Seconds() }.await()
+            listOf(string1, string2)
         }
     }
 
