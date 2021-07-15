@@ -1,8 +1,10 @@
 package pl.allegro.fedexcoroutinesclient.service
 
+import io.github.resilience4j.kotlin.retry.executeFunction
 import io.github.resilience4j.kotlin.retry.executeSuspendFunction
 import io.github.resilience4j.retry.Retry
 import io.github.resilience4j.retry.RetryConfig
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component
 import pl.allegro.fedexcoroutinesclient.api.HelloFeignClient
 import pl.allegro.fedexcoroutinesclient.logger
 import java.time.Duration
+import java.util.concurrent.Executors
 
 @Component
 class HelloResilienceService(
@@ -21,10 +24,22 @@ class HelloResilienceService(
     fun callResilientHelloNo1(): List<String> {
         return runBlocking {
             listOf(
-                retry().executeSuspendFunction { callHelloWithErrorsSuspended() }
+                retry().executeFunction { callHelloWithErrors() }
             )
         }
     }
+
+    fun callResilientHelloNo2(): List<String> {
+        val dispatcher = Executors.newFixedThreadPool(5).asCoroutineDispatcher()
+        return runBlocking {
+            val deferred1 = async(dispatcher) { callInternal() }
+            val deferred2 = async(dispatcher) { callHello5Seconds() }
+            listOf(deferred1, deferred2).awaitAll()
+        }
+    }
+
+    private suspend fun callInternal() =
+        retry().executeSuspendFunction { callHelloWithErrors() }
 
     private fun retry(): Retry {
         val config: RetryConfig = RetryConfig.custom<Any>()
@@ -41,11 +56,6 @@ class HelloResilienceService(
 
     private fun callHelloWithErrors(): String {
         logThreadInfo("callHelloWithErrors")
-        return client.getDataWithErrors()!!.text
-    }
-
-    private suspend fun callHelloWithErrorsSuspended(): String {
-        logThreadInfo("callHelloWithErrorsSuspended")
         return client.getDataWithErrors()!!.text
     }
 

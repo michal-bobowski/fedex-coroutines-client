@@ -38,7 +38,7 @@ class FedexCoroutinesClientApplicationTests(
 	fun shouldCallEndpointsWithResilientService() {
 		logger.info("Begin")
 		assertTimeout(Duration.ofSeconds(15)) {
-			resilientService.callResilientHelloNo1()
+			resilientService.callResilientHelloNo2()
 		}
 		logger.info("The end")
 	}
