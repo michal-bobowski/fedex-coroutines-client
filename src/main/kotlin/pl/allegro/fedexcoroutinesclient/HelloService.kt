@@ -1,11 +1,14 @@
 package pl.allegro.fedexcoroutinesclient
 
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.util.concurrent.Executors
 
 @Component
 class HelloService(
@@ -36,6 +39,27 @@ class HelloService(
         return runBlocking {
             val deferred1 = async(newSingleThreadContext("MyOwnThread1")) { callHello5Seconds() }
             val deferred2 = async(newSingleThreadContext("MyOwnThread2")) { callHello10Seconds() }
+            awaitAll(deferred1, deferred2)
+        }
+        // reuse threads or close in finally
+    }
+
+    fun callHelloSuspendedNo4(): List<String> {
+        logThreadInfo("Top level")
+        return runBlocking {
+            val deferred1 = async(newFixedThreadPoolContext(2, "MyOwnThreadPool1")) { callHello5Seconds() }
+            val deferred2 = async(newFixedThreadPoolContext(2, "MyOwnThreadPool2")) { callHello10Seconds() }
+            awaitAll(deferred1, deferred2)
+        }
+    }
+
+    fun callHelloSuspendedNo5(): List<String> {
+        logThreadInfo("Top level")
+        val executorService1 = Executors.newFixedThreadPool(2)
+        val executorService2 = Executors.newFixedThreadPool(2)
+        return runBlocking {
+            val deferred1 = async(executorService1.asCoroutineDispatcher()) { callHello5Seconds() }
+            val deferred2 = async(executorService2.asCoroutineDispatcher()) { callHello10Seconds() }
             awaitAll(deferred1, deferred2)
         }
     }

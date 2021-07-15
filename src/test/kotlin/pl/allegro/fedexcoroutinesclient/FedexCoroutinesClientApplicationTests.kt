@@ -1,8 +1,10 @@
 package pl.allegro.fedexcoroutinesclient
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertTimeout
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.time.Duration
 
 @SpringBootTest
 class FedexCoroutinesClientApplicationTests(
@@ -10,9 +12,11 @@ class FedexCoroutinesClientApplicationTests(
 ) {
 
 	@Test
-	fun contextLoads() {
+	fun shouldCallEndpointsWithDelay() {
 		logger.info("Begin")
-		service.callHelloSuspendedNo3()
+		assertTimeout(Duration.ofSeconds(15)) {
+			service.callHelloSuspendedNo5()
+		}
 		logger.info("The end")
 	}
 
