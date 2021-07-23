@@ -22,24 +22,13 @@ class HelloResilienceService(
 ) {
 
     fun callResilientHelloNo1(): List<String> {
-        return runBlocking {
-            listOf(
-                retry().executeFunction { callHelloWithErrors() }
-            )
-        }
-    }
-
-    fun callResilientHelloNo2(): List<String> {
         val dispatcher = Executors.newFixedThreadPool(5).asCoroutineDispatcher()
-        return runBlocking {
-            val deferred1 = async(dispatcher) { callInternal() }
-            val deferred2 = async(dispatcher) { callHello5Seconds() }
+        return runBlocking(dispatcher) {
+            val deferred1 = async { retry().executeFunction { callHelloWithErrors() } }
+            val deferred2 = async { callHello5Seconds() }
             listOf(deferred1, deferred2).awaitAll()
         }
     }
-
-    private suspend fun callInternal() =
-        retry().executeSuspendFunction { callHelloWithErrors() }
 
     private fun retry(): Retry {
         val config: RetryConfig = RetryConfig.custom<Any>()

@@ -20,7 +20,7 @@ class FedexCoroutinesClientApplicationTests(
 	fun shouldCallEndpointsWithDelay() {
 		logger.info("Begin")
 		assertTimeout(Duration.ofSeconds(15)) {
-			service.callHelloSuspendedNo5()
+			service.callHelloSuspendedNo1()
 		}
 		logger.info("The end")
 	}
@@ -29,7 +29,7 @@ class FedexCoroutinesClientApplicationTests(
 	fun shouldCallEndpointsWithErrors() {
 		logger.info("Begin")
 		assertTimeout(Duration.ofSeconds(15)) {
-			errorsService.callHelloErrorsNo3()
+			errorsService.callHelloErrorsNo1()
 		}
 		logger.info("The end")
 	}
@@ -38,7 +38,7 @@ class FedexCoroutinesClientApplicationTests(
 	fun shouldCallEndpointsWithResilientService() {
 		logger.info("Begin")
 		assertTimeout(Duration.ofSeconds(15)) {
-			resilientService.callResilientHelloNo2()
+			resilientService.callResilientHelloNo1()
 		}
 		logger.info("The end")
 	}
